@@ -76,6 +76,7 @@ class _ButtonState extends State<Button>{
             TextButton(
               style: style,
               onPressed: () => setState((){
+                if(_controller.text.isEmpty) return;
                 _todo.add(Todo(_controller.text, done: false));
                 _controller.clear();
               }),
