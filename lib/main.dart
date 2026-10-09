@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +22,7 @@ class Field extends StatelessWidget{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: const Text('カウンター'),
+        title: const Text('Todoリスト'),
       ),
       body: Center(
         child: const TodoPage(),
@@ -63,7 +62,7 @@ class _TodoPageState extends State<TodoPage>{
       child: Column(
         children: [
           TodoInput(onAdd: _addTodo),
-          TodoListView(todos: _todo, onData: _markDone),
+          TodoListView(todos: _todo, onDone: _markDone),
         ],
       ),
     );
@@ -101,33 +100,28 @@ class _TodoInputState extends State<TodoInput> {
             controller: _controller,
           ),
         ),
-        Expanded(
-          child: TextButton(
+        TextButton(
             style: style,
-            onPressed: () => setState((){
+            onPressed: () {
               final title = _controller.text.trim();
-              if(_controller.text.isEmpty) return;
+              if(_controller.text.trim().isEmpty) return;
               widget.onAdd(title);
               _controller.clear();
-            }),
+            },
             child: const Text('追加'),
           ),
-        )
       ],
     );
   }
 }
 
 class TodoListView extends StatelessWidget{
-  const TodoListView({super.key, required this.todos, required this.onData});
+  const TodoListView({super.key, required this.todos, required this.onDone});
   final List<Todo> todos;
-  final void Function(Todo todo) onData;
+  final void Function(Todo todo) onDone;
 
   @override
   Widget build(BuildContext context){
-    final ButtonStyle style = TextButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20),
-    );
     return Column(
       mainAxisSize: .min,
       children: [
@@ -138,7 +132,7 @@ class TodoListView extends StatelessWidget{
               else Text('×'),
               Expanded(child: Text('${i.title}'),),
               TextButton(
-                onPressed: () => onData(i),
+                onPressed: () => onDone(i),
                 child: const Text('完了'),
               ),
             ],
