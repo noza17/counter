@@ -32,10 +32,42 @@ class Field extends StatelessWidget{
   }
 }
 
+class TodoPage extends StatefulWidget{
+  const TodoPage({super.key});
+
+  @override
+  State<TodoPage> createState() => _TodoPageState(); 
+}
+
 class Todo{
   Todo(this.title, {this.done = false});
   final String title;
   bool done;
+}
+
+class _TodoPageState extends State<TodoPage>{
+  List<Todo> _todo = [];
+
+  void _addTodo(String title){
+    setState(() => _todo.add(Todo(title)));
+  }
+
+  void _markDone(Todo todo){
+    setState(() => todo.done = true);
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        children: [
+          TodoInput(onAdd: _addTodo),
+          TodoListView(todos: _todo, onData: _markDone),
+        ],
+      ),
+    );
+  }
 }
 
 class TodoInput extends StatefulWidget{
@@ -104,107 +136,14 @@ class TodoListView extends StatelessWidget{
             children: [
               if (i.done == true) Text('〇') 
               else Text('×'),
-              Text('${i.title}'),
+              Expanded(child: Text('${i.title}'),),
+              TextButton(
+                onPressed: () => onData(i),
+                child: const Text('完了'),
+              ),
             ],
           ),
       ],
     );
   }
 }
-
-class TodoPage extends StatefulWidget{
-  const TodoPage({super.key});
-
-  @override
-  State<TodoPage> createState() => _TodoPageState(); 
-}
-
-class _TodoPageState extends State<TodoPage>{
-  List<Todo> _todo = [];
-
-  void _addTodo(String title){
-    setState(() => _todo.add(Todo(title)));
-  }
-
-  void _markDone(Todo todo){
-    setState(() => todo.done = true);
-  }
-
-  @override
-  Widget build(BuildContext context){
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Column(
-        children: [
-          TodoInput(onAdd: _addTodo),
-          TodoListView(todos: _todo, onData: _markDone),
-        ],
-      ),
-    );
-  }
-}
-
-// class Button extends StatefulWidget{
-//   const Button({super.key});
-
-//   @override
-//   State<Button> createState() => _ButtonState();
-// }
-
-// class _ButtonState extends State<Button>{
-//   List<Todo> _todo = [];
-//   final TextEditingController _controller = TextEditingController();
-
-//   @override
-//   void dispose(){
-//     _controller.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context){
-//     final ButtonStyle style = TextButton.styleFrom(
-//       textStyle:const TextStyle(fontSize: 20),
-//     );
-    
-//     return Column(
-//       mainAxisSize: .min,
-//       children: [
-//         Row(
-//           children: [
-//             Expanded(
-//               child: TextField(
-//                 controller: _controller,
-//               ),
-//             ),
-//             TextButton(
-//               style: style,
-//               onPressed: () => setState((){
-//                 if(_controller.text.isEmpty) return;
-//                 _todo.add(Todo(_controller.text, done: false));
-//                 _controller.clear();
-//               }),
-//               child: const Text('追加'),
-//             ),
-//           ],
-//         ),
-//         for (final i in _todo)
-//           Center(
-//             child: 
-//             Row(
-//             children: [
-//               if (i.done == true) Text('〇') 
-//               else Text('×'),
-//               Text('${i.title}'),
-//               TextButton(
-//                 style: style,
-//                 onPressed: () => setState(() => i.done = true),
-//                 child: const Text('done'),  
-//               ),
-//             ],
-//           ),
-//         )
-//       ],
-//     );
-//   }
-// }
